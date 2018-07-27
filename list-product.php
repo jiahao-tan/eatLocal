@@ -15,9 +15,9 @@
 							</div>
 							<div class="row">
 								<div class="col">
-									<label for="catogory">Category</label>
-									<select name="catogory" class="form-control" id="catogory" placeholder="Select a category">
-										<option value="Vagetable">Vagetable</option>
+									<label for="category">Category</label>
+									<select name="category" class="form-control" id="category" placeholder="Select a category">
+										<option value="Vegetable">Vegetable</option>
 										<option value="Fruit">Fruit</option>
 										<option value="Homemade">Homemade Food</option>
 									</select>
@@ -27,18 +27,18 @@
 							<div class="row">
 								<div class="col">
 									<label for="desc">Discription</label>
-									<textarea name="desc" class="form-control" rows="5" cols="30" placeholder="Describe your products"></textarea>
+									<textarea name="desc" class="form-control" id="$desc" rows="5" cols="30" placeholder="Describe your products"></textarea>
 								</div>
 							</div>
 
 							 <div class="row">
 									<div class="col">
 										<label for="price">Price/Unit</label>
-										<input type="price" class="form-control" id="exampleInputPassword1" placeholder="$">
+										<input name="price" type="text" class="form-control" id="price" placeholder="$">
 									</div>
-                                    <div class="col">
+                  <div class="col">
 										<label for="unit">Unit</label>
-										<select name="cars" class="form-control" id="unit"holder="Select a unit">
+										<select name="unit" class="form-control" id="unit" holder="Select a unit">
     									<option value="kg">kg</option>
     									<option value="ml">ml</option>
     									<option value="each">each</option>
