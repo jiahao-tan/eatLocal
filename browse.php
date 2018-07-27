@@ -106,15 +106,15 @@ include 'config.php';
 			  echo '<div class="col-md-4 col-sm-2">';
 			  echo '<div class="veg img-border">';
 			  echo '<img src="images/'.$obj->product_img_name.'" class="veg-img">';
-			  echo'<div class="overlay">'.$obj->product_name.' '.$currency.$obj->price.'</div>';
+			  echo'<div class="overlay">'.$obj->product_name.' '.$currency.$obj->unit_price.'</div>';
 			  echo '</div>';
 			  
-			  if($obj->qty > 0){
-                echo'<div><a href="update-cart.php?action=add&id='.$obj->id.'"><input type="submit" value="Add To Cart" class="btn btn-primary col-md-6 offset-md-3" /></a></div>';
-              }
-              else {
-                echo '<div class="col-md-6 offset-md-3"> Out Of Stock! </div>';
-              }
+			  #if($obj->qty > 0){
+                #echo'<div><a href="update-cart.php?action=add&id='.$obj->id.'"><input type="submit" value="Add To Cart" class="btn btn-primary col-md-6 offset-md-3" /></a></div>';
+              #}
+              #else {
+                #echo '<div class="col-md-6 offset-md-3"> Out Of Stock! </div>';
+              #}
 			  echo'</div>';
 
               $i++;
