@@ -11,13 +11,13 @@ if (session_id() == '' || !isset($_SESSION)) {session_start();}
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
 	<link href="css/style.css" rel="stylesheet" type="text/css">
-	
+
 		<?php
-			$page = isset($_GET['page']) ? $_GET['page'] : 'home';
+			$page = isset($_GET['page']) ? $_GET['page'] : 'home3';
 			echo '<link href="css/' . $page . '.css" rel="stylesheet" type="text/css">';
 		?>
-	
-	
+
+
 
 	<!-- <script src="js/slim.min.js"> </script>
 	<script src="js/popper.min.js"> </script>
@@ -41,29 +41,28 @@ if (session_id() == '' || !isset($_SESSION)) {session_start();}
 
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item">
-					<a class="nav-link" href="index.php">Home</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="index.php?page=browse">Browse Products</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="index.php?page=cart">Cart</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="index.php?page=orders">Orders</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="index.php?page=list-product">List Product</a>
-				</li>
+
+				<?php
+	if (isset($_SESSION["username"])) {
+			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=home3">Home</a></li>';
+			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=browse">Products</a></li>';
+			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=cart">Cart</a></li>';
+			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=list-product">Post</a></li>';
+	} else {
+			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=home3">Home</a></li>';
+			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=browse">Products</a></li>';
+	}
+	?>
+				
 			</ul>
+
 			<ul class="navbar-nav navbar-right">
 			<?php
 if (isset($_SESSION["username"])) {
-    echo '<li class="nav-item"><a class="nav-link" href="index.php?page=account"><i class="fas fa-user mryt-10"></i>My Account</a></li>';
+    echo '<li class="nav-item"><a class="nav-link" href="index.php?page=account">My Account</a></li>';
     echo '<li class="nav-item"><a class="nav-link" href="index.php?page=logout"><span></span>Log Out</a></li>';
 } else {
-    echo '<li class="nav-item"><a class="nav-link" href="index.php?page=login"><i class="fas fa-user mryt-10"></i><span><img src="images/user.png" width="30em" style="padding-right:0.4em"></span>Log In</a></li>';
+    echo '<li class="nav-item"><a class="nav-link" href="index.php?page=login"><span><img src="images/user.png" width="30em" style="padding-right:0.4em"></span>Log In</a></li>';
     echo '<li class="nav-item"><a class="nav-link" href="index.php?page=sign-up"><span></span>Sign Up</a></li>';
 }
 ?>
@@ -73,10 +72,10 @@ if (isset($_SESSION["username"])) {
 	</nav>
 
 	<?php
-$page = isset($_GET['page']) ? $_GET['page'] : 'home';
+$page = isset($_GET['page']) ? $_GET['page'] : 'home3';
 include $page . '.php';
 ?>
 
 </body>
 
-</html> 
+</html>
