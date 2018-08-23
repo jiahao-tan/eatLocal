@@ -105,8 +105,14 @@ include 'config.php';
 
 			  echo '<div class="col-md-4 col-sm-2">';
 			  echo '<div class="veg img-border">';
+			  echo "<a href=\"index.php?page=individual_product&product_id=".$obj->id."\">";
 			  echo '<img src="images/'.$obj->product_img_name.'" class="veg-img">';
-			  echo'<div class="overlay">'.$obj->product_name.' '.$currency.$obj->unit_price.'</div>';
+			  echo "</a>";
+			  echo "<div class=\"overlay\">\n";
+			  echo $obj->product_name." ".$currency.$obj->price." per ".$obj->unit."<br/>\n";
+			  echo "<a href=\"index.php?page=compose_new&to_user_id=".$obj->seller_user_id."&product_id=".$obj->id."\">Contact seller</a><br/>\n";
+			  echo "</div>\n";
+
 			  echo '</div>';
 			  
 			  #if($obj->qty > 0){

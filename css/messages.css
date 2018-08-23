@@ -1,0 +1,46 @@
+.conv_list, .messages {
+	border: 1px solid #cccccc;
+	#position:absolute;
+	#overflow-y: scroll;
+	padding: 0.5em;
+}
+
+.conv_item_recipient, .message_sender {
+}
+
+form.messaging_form {
+	border: 1px solid grey;
+	background-color: #eeeeee;
+}
+
+a.nodecoration {
+	text-decoration: none !important;
+}
+
+span.conv_item_subject {
+	font-size: larger;
+	font-style: bold;
+}
+
+span.conv_item_latest {
+	font-size: smaller;
+	font-style: italic;
+}
+
+
+.conv_item_subject, .mark_as_read, .message_message {
+	padding-left: 0.5em;
+}
+
+.conv_item_latest_date, .message_time, .mark_as_read {
+	font-style: italic;
+	font-size: smaller;
+}
+
+.message_unread {
+	font-style: bold;
+}
+
+.active_conv_item {
+	background: #cccccc;
+}

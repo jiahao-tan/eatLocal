@@ -1,4 +1,5 @@
 <?php
+	error_reporting(E_ALL|E_STRICT);
 if (session_id() == '' || !isset($_SESSION)) {session_start();}
 ?>
 <!doctype html>
@@ -32,7 +33,7 @@ if (session_id() == '' || !isset($_SESSION)) {session_start();}
 	<!-- Navigation -->
 	<nav class="navbar sticky-top navbar-expand-sm navbar-dark bg-clr">
 		<a class="navbar-brand" href="index.php">
-			<img src="images/LOGO.png" alt="eatLocal" width="130em">
+			<img src="images/logo.png" alt="eatLocal" width="130em">
 		</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
 		 aria-expanded="false" aria-label="Toggle navigation">
@@ -45,20 +46,60 @@ if (session_id() == '' || !isset($_SESSION)) {session_start();}
 				<?php
 	if (isset($_SESSION["username"])) {
 			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=home3">Home</a></li>';
+			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=messages">Messages<span class="num_unread" id="num_unread"></span></a></li>';
+			if(isset($_SESSION["user_id"]))
+			{
+				include "config.php";
+				$user_id = $_SESSION["user_id"];
+				$num_unread_msgs = 0;
+				$result = $mysqli->query("SELECT * FROM messages m, conversations c WHERE m.conversation_id = c.conversation_id AND (c.from_user_id = '".$user_id."' OR c.to_user_id = '".$user_id."')");
+				if($result == false)
+				{
+					die($mysqli->error);
+				}
+				while($obj = $result->fetch_object())
+				{
+					if(!$obj->isread)
+					{
+						if(($user_id == $obj->to_user_id && $obj->sender_is_from == 1) || ($user_id == $obj->from_user_id && $obj->sender_is_from == 0))
+							$num_unread_msgs++;
+					}
+				}
+				if($num_unread_msgs > 0)
+					echo "<script>document.getElementById(\"num_unread\").innerHTML = \" (".$num_unread_msgs." unread)\";</script>";
+			}
+
 			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=browse">Products</a></li>';
 			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=cart">Cart</a></li>';
 			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=list-product">Post</a></li>';
 	} else {
 			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=home3">Home</a></li>';
+			//echo '<li class="nav-item"><a class="nav-link" href="index.php?page=messages">Messages</a></li>';
 			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=browse">Products</a></li>';
 	}
 	?>
-				
+
+				<!-- <li class="nav-item">
+					<a class="nav-link" href="index.php">Home</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="index.php?page=browse">Products</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="index.php?page=cart">Cart</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="index.php?page=orders">Orders</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="index.php?page=list-product">List Product</a>
+				</li> -->
 			</ul>
 
 			<ul class="navbar-nav navbar-right">
 			<?php
 if (isset($_SESSION["username"])) {
+    //echo '<li class="nav-item">'.$_SESSION["username"].'</li>';
     echo '<li class="nav-item"><a class="nav-link" href="index.php?page=account">My Account</a></li>';
     echo '<li class="nav-item"><a class="nav-link" href="index.php?page=logout"><span></span>Log Out</a></li>';
 } else {
@@ -73,7 +114,7 @@ if (isset($_SESSION["username"])) {
 
 	<?php
 $page = isset($_GET['page']) ? $_GET['page'] : 'home3';
-include $page . '.php';
+require "./".$page.".php";
 ?>
 
 </body>

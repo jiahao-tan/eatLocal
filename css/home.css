@@ -1,0 +1,62 @@
+@charset "UTF-8";
+/* CSS Document */
+
+body, html {
+	font-family: 'Open Sans', sans-serif;
+    height: 100%;
+}
+
+h2{
+	font-size:2vw;
+	padding-top:2vh;
+}
+.schimg {
+	/* The image used */
+    background-image: url('../images/search.png');
+
+    /* Full height */
+    height: 100%; 
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.ad img{
+	float:left;
+	margin: 1.1vw;
+	alignment-adjust:central;
+	width: 18vw;
+}
+
+form.example input[type=text] {
+    padding: 10px;
+    font-size: 17px;
+    border: 1px solid grey;
+    float: left;
+    width: 80%;
+    background: #f1f1f1;
+}
+
+form.example button {
+    float: left;
+    width: 20%;
+    padding: 10px;
+    background: #2196F3;
+    color: white;
+    font-size: 17px;
+    border: 1px solid grey;
+    border-left: none;
+    cursor: pointer;
+}
+
+form.example button:hover {
+    background: #0b7dda;
+}
+
+form.example::after {
+    content: "";
+    clear: both;
+    display: table;
+}

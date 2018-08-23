@@ -1,0 +1,17 @@
+span.name {
+	display: block;
+	font-size: 2em;
+}
+
+span.user_description, span.contact_user, span.user_rating {
+	display: block;
+}
+
+.user_id, .location {
+	font-style: italic;
+}
+
+div.rate_form {
+	border: 1px solid #aaaaaa;
+	background-color: #dddddd;
+}

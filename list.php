@@ -9,11 +9,13 @@ $price = $_POST["price"];
 $unit = $_POST["unit"];
 $image = $_POST["image"];
 
+echo 'Price = '.$price;
+
 if($mysqli->query("INSERT INTO products (product_name, product_desc,
 product_img_name, unit_price, category)
 VALUES('$title', '$desc', '$image', '$price', '$category')")){
 	echo 'Data inserted';
 	echo '<br/>';
 }
-header ("location:index.php?page=browse");
+#header ("location:index.php?page=browse");
 ?>

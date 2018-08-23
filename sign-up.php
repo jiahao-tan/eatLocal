@@ -11,7 +11,13 @@
 								<i>Fields marked with an asterisk (*) must be entered.</i>
 							</p>
 						</center>
-						<form method="POST" action="insert.php" role="form">
+						<form method="POST" action="index.php?page=insert" role="form" enctype="multipart/form-data">
+							<div class="row">
+								<div class="col">
+									<label for="user_id">*User id</label>
+									<input type="text" class="form-control" id="user_id" name="user_id" size="32" maxlength="32" required />
+								</div>
+							</div>
 							<div class="row">
 								<div class="col-md-6">
 									<label for="fname">*First Name</label>
@@ -52,6 +58,13 @@
 									/>
 								</div>
 							</div>
+							<div class="row">
+								<div class="col">
+									<label for="file">Image:</label>
+									<!-- <input type="hidden" name="MAX_FILE_SIZE" value="131072"> -->
+									<input type="file" class="form-control" id="image" name="image"/>
+								</div>
+							</div>
 							<!-- <div class="row">
 								<div class="col">
 									<center>
@@ -62,7 +75,7 @@
 							<div class="row">
 								<div class="col">
 									<center>
-										<button type="submit" class="btn btn-clr">register</button>
+										<button type="submit" class="btn btn-clr">Register</button>
 									</center>
 								</div>
 							</div>

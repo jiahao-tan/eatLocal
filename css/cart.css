@@ -1,0 +1,28 @@
+@charset "UTF-8";
+/* CSS Document */
+
+body, html {
+	font-family: 'Open Sans', sans-serif;
+    height: 100%;
+}
+h1 {
+	padding-top:2em;
+	}
+
+h2{
+	font-size:2vw;
+	padding-bottom:2em;
+}
+
+.bg {
+    /* The image used */
+    background-image: url("../images/cart.jpg");
+
+    /* Full height */
+    height: 100%; 
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}

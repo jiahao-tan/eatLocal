@@ -17,16 +17,21 @@
 								<div class="col">
 									<label for="category">Category</label>
 									<select name="category" class="form-control" id="category" placeholder="Select a category">
-										<option value="Vegetable">Vegetable</option>
-										<option value="Fruit">Fruit</option>
-										<option value="Homemade">Homemade Food</option>
+										<?php
+											include "config.php";
+											$result = $mysqli->query("SELECT cat_title FROM categories order by cat_title");
+											if($result == false)
+												die($mysqli->error);
+											while($obj = $result->fetch_object())
+												echo "<option value=\"".$obj->cat_title."\">".$obj->cat_title."</option>\n";
+										?>
 									</select>
 								</div>
 							</div>
 
 							<div class="row">
 								<div class="col">
-									<label for="desc">Discription</label>
+									<label for="desc">Description</label>
 									<textarea name="desc" class="form-control" id="$desc" rows="5" cols="30" placeholder="Describe your products"></textarea>
 								</div>
 							</div>
@@ -38,11 +43,14 @@
 									</div>
                   <div class="col">
 										<label for="unit">Unit</label>
+										<!--
 										<select name="unit" class="form-control" id="unit" holder="Select a unit">
     									<option value="kg">kg</option>
     									<option value="ml">ml</option>
     									<option value="each">each</option>
   										</select>
+										-->
+										<input name="unit" type="text" id="unit" class="form-control" placeholder="kg, ml, each, 250g bottle, etc.">
 									</div>
 								</div>
 

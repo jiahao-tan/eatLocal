@@ -31,7 +31,11 @@ include 'config.php';
   <body>
     <div class="row" style="margin-top:30px;">
       <div class="small-12">
-        <p><?php echo '<h3>Hi ' .$_SESSION['fname'] .'</h3>'; ?></p>
+        <p>
+			<?php
+				echo '<h3>Hi ' .$_SESSION['fname'] .'</h3>';
+			?>
+		</p>
 
         <p><h4>Account Details</h4></p>
 
@@ -40,7 +44,7 @@ include 'config.php';
     </div>
 
 
-    <form method="POST" action="update.php" style="margin-top:30px;">
+    <form method="POST" action="index.php?page=update" style="margin-top:30px;" enctype="multipart/form-data">
       <div class="row">
         <div class="small-12">
 
@@ -51,10 +55,10 @@ include 'config.php';
             <div class="small-8 columns end">
               <?php
 
-                $result = $mysqli->query('SELECT * FROM users WHERE id='.$_SESSION['id']);
+                $result = $mysqli->query("SELECT * FROM users WHERE user_id='".$_SESSION['user_id']."'");
 
                 if($result === FALSE){
-                  die(mysql_error());
+                  die($mysqli->error);
                 }
 
                 if($result) {
@@ -119,6 +123,25 @@ include 'config.php';
 
                   echo '</div>';
                   echo '</div>';
+
+                  echo '<div class="row">';
+                  echo '<div class="small-3 columns">';
+                  echo '<label for="image" class="right inline">Image</label>';
+                  echo '</div>';
+
+                  echo '<div class="small-8 columns end">';
+
+
+					if(file_exists("user_images/".$_SESSION["user_id"]))
+						echo '<img src="user_images/'.$_SESSION["user_id"].'">';
+					else
+						echo "User does not have an image at this point.";
+				  //echo "<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"131072\">\n";
+                  echo '<input type="file" id="image" name="image">';
+
+                  echo '</div>';
+                  echo '</div>';
+
               }
 
 
@@ -146,8 +169,6 @@ include 'config.php';
         </div>
       </div>
     </form>
-
-
 
     <div class="row" style="margin-top:30px;">
       <div class="small-12">
