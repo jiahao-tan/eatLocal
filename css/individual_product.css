@@ -2,6 +2,19 @@ span.user_rating {
 	display: block;
 }
 
+.usercol {
+	background:#efefef;
+}
+
+.usercontact{
+	padding-top: 12px;
+	padding-bottom: 12px;
+}
+
+.fa-envelope{
+	padding-left: 10px;
+}
+
 .user_id {
 	font-style: italic;
 }
@@ -11,9 +24,10 @@ img.user_image {
 }
 
 .header {
-    border: 1px solid red;
-    padding: 15px;
+	color: #155724;
+	    padding: 15px;
 }
+
 .row::after {
     content: "";
     clear: both;
@@ -49,7 +63,7 @@ body {
 
 * {
   box-sizing: border-box;
-  
+
 }
 
 img {
@@ -62,9 +76,8 @@ align-items:center;
   position: relative;
 }
 
-/* Hide the images by default */
-.mySlides {
-  display: none;
+.center {
+	align-content: center;
 }
 
 /* Add a pointer when hovering over the thumbnail images */
@@ -143,11 +156,7 @@ align-items:center;
 html {
     font-family: "Lucida Sans", sans-serif;
 }
-.header {
-    background-color: #9933cc;
-    color: #ffffff;
-    padding: 15px;
-}
+
 .menu ul {
     list-style-type: none;
     margin: 0;

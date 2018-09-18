@@ -17,7 +17,7 @@ ul li {
 	font-size: 16px;
 	margin: 0 0 10px 0;
 	}
-	
+
 a {
 	text-decoration: none;
 	color: #000;
@@ -32,6 +32,11 @@ panel-title.a:hover {
 	margin: 1vw;
 	alignment-adjust:central;
 	width: 15vw;
+}
+
+.img-border{
+    border:2px solid #495057;
+    margin: 1em 0em;
 }
 
 form.example input[type=text] {
