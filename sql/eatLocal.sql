@@ -22,10 +22,8 @@ CREATE TABLE `users` (
   `fname` varchar(255) NOT NULL,
   `lname` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL,
-  `city` varchar(100) NOT NULL,
-  `pin` int(6) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `password` varchar(15) NOT NULL,
+  `password` varchar(255) NOT NULL,
   `type` varchar(20) NOT NULL DEFAULT 'user',
   `date_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `image` varchar(64) DEFAULT null,
@@ -34,11 +32,11 @@ CREATE TABLE `users` (
   `desc` varchar(1024) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `users` (`user_id`, `fname`, `lname`, `address`, `postcode`, `suburb`, `city`, `pin`, `email`, `password`, `type`, `desc`) VALUES
-('scott', 'Scott', 'B', 'Milton', '4066','Milton', 'Brisbane', 95014, 'scott@gmail.com', 'scott', 'user', 'Scott farms produce in Milton and sells locally.'),
-('james', 'James', 'Smith', 'Milton', '4000', 'Brisbane CBD', 'Brisbane', 95014, 'james.smith@gmail.com', 'james', 'user', 'James operates out of the Brisbane CBD and sources all produce locally within Brisbane.'),
-('jay', 'Jay', 'L', 'Milton', '4072', 'St. Lucia', 'Brisbane', 95014, 'jay@scott', 'jay', 'user', 'Jay is based in the western suburbs of Brisbane and sources all her produce from organic farms on the Sunshine- and Gold Coast-hinterlands.'),
-('admin', 'admin', 'admin', 'address', '95014', 'Los Angeles', 'California', 95014, 'admin@admin.com', 'admin', 'admin', NULL);
+INSERT INTO `users` (`user_id`, `fname`, `lname`, `address`, `postcode`, `suburb`, `email`, `password`, `type`, `desc`) VALUES
+('scott', 'Scott', 'B', 'Milton', '4066','Milton', 'scott@gmail.com', '$2y$10$kQNhbPHJveyAMqa4beu0P..a4ZGxr3qGrbLtwpYW2XLYjoaqaVQvW', 'user', 'Scott farms produce in Milton and sells locally.'),
+('james', 'James', 'Smith', 'Milton', '4000', 'Brisbane City', 'james.smith@gmail.com', '$2y$10$2i1TcHTQr0Om3FjtrCL15eDljvw8uMqMqnyJ/QXN8X/KWwOno8/qS', 'user', 'James operates out of the Brisbane CBD and sources all produce locally within Brisbane.'),
+('jay', 'Jay', 'L', 'Milton', '4072', 'St. Lucia', 'jay@scott', '$2y$10$nUQImDpxXHFE5JsMisEv..29UcPvzKJ7CXM1PQD6AnEAT5c7JhZa2', 'user', 'Jay is based in the western suburbs of Brisbane and sources all her produce from organic farms on the Sunshine- and Gold Coast-hinterlands.'),
+('admin', 'admin', 'admin', 'address', '95014', 'Los Angeles', 'admin@admin.com', '$2y$10$CepkuR7SOUJOJTAKOPICSuvwUb37vK873z9vdMM9bzQI02FOv/4nC', 'admin', NULL);
 
 --
 -- Table structure for table `categories`
@@ -56,29 +54,6 @@ INSERT INTO `categories` (`Cat_title`) VALUES
 ('Fruit'),
 ('Vegetables');
 
---
--- Table structure for table `orders`
---
-
-CREATE TABLE `orders` (
-  `id` int(11) NOT NULL,
-  `product_code` varchar(255) NOT NULL,
-  `product_name` varchar(255) NOT NULL,
-  `product_desc` varchar(255) NOT NULL,
-  `price` int(10) NOT NULL,
-  `units` int(5) NOT NULL,
-  `total` int(15) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `date_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `orders`
---
-
-INSERT INTO `orders` (`id`, `product_code`, `product_name`, `product_desc`, `price`, `units`, `total`, `email`, `date_time`) VALUES
-(5, 'p1', 'Apple', 'apple', 20, 1, 20, 'admin@admin.com', '2018-05-26 08:03:57'),
-(6, 'p1', 'Apple', 'apple', 20, 2, 40, 'admin@admin.com', '2018-05-26 14:15:17');
 
 --
 -- Table structure for table `products`
@@ -195,19 +170,31 @@ CREATE TABLE `user_reviews` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Indexes for dumped tables
+-- Table structure for table `orders`
 --
 
---
--- Indexes for table `orders`
---
-ALTER TABLE `orders`
-  ADD PRIMARY KEY (`id`);
+CREATE TABLE `orders` (
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `buyer_user_id` varchar(32) NOT NULL,
+  `status` varchar(255) NOT NULL,
+  `txnid` varchar(20),
+  `payment_status` varchar(25),
+  `payment_amount` decimal(7,2),
+  `date_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT fk_buyer_user_id FOREIGN KEY (buyer_user_id) REFERENCES users(user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- AUTO_INCREMENT for table `orders`
+-- Dumping data for table `orders`
 --
-ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+CREATE TABLE `order_items` (
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `order_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `qty` int(10) NOT NULL,
+	CONSTRAINT fk_prod_id FOREIGN KEY (product_id) REFERENCES products(id),
+	CONSTRAINT fk_order_id FOREIGN KEY (order_id) REFERENCES orders(id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 COMMIT;
