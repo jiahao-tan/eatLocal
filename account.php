@@ -48,11 +48,6 @@ include 'config.php';
       <div class="row">
         <div class="small-12">
 
-          <div class="row">
-            <div class="small-3 columns">
-              <label for="right-label" class="right inline">First Name</label>
-            </div>
-            <div class="small-8 columns end">
               <?php
 
                 $result = $mysqli->query("SELECT * FROM users WHERE user_id='".$_SESSION['user_id']."'");
@@ -63,10 +58,24 @@ include 'config.php';
 
                 if($result) {
                   $obj = $result->fetch_object();
+          		  echo '<div class="row">';
+                  echo '<div class="small-3 columns">';
+                    echo '<label for="user_id" class="right inline">User id.</label>';
+                  echo '</div>';
+                  echo '<div class="small-8 columns end">';
+                  echo '<span id="user_id">'. $obj->fname. '</span>';
+                  echo '</div>';
+				  echo '</div>';
+
+          		  echo '<div class="row">';
+                  echo '<div class="small-3 columns">';
+                    echo '<label for="right-label" class="right inline">First Name</label>';
+                  echo '</div>';
+                  echo '<div class="small-8 columns end">';
                   echo '<input type="text" id="right-label" placeholder="'. $obj->fname. '" name="fname">';
 
                   echo '</div>';
-                    echo '</div>';
+				  echo '</div>';
 
                   echo '<div class="row">';
                   echo '<div class="small-3 columns">';
@@ -93,20 +102,20 @@ include 'config.php';
 
                   echo '<div class="row">';
                   echo '<div class="small-3 columns">';
-                  echo '<label for="right-label" class="right inline">City</label>';
+                  echo '<label for="right-label" class="right inline">Suburb</label>';
                   echo '</div>';
                   echo '<div class="small-8 columns end">';
-                  echo '<input type="text" id="right-label" placeholder="'. $obj->city. '" name="city">';
+                  echo '<input type="text" id="right-label" placeholder="'. $obj->suburb. '" name="suburb">';
                   echo '</div>';
                   echo '</div>';
 
                   echo '<div class="row">';
                   echo '<div class="small-3 columns">';
-                  echo '<label for="right-label" class="right inline">Pin Code</label>';
+                  echo '<label for="right-label" class="right inline">Postcode</label>';
                   echo '</div>';
                   echo '<div class="small-8 columns end">';
 
-                  echo '<input type="text" id="right-label" placeholder="'. $obj->pin. '" name="pin">';
+                  echo '<input type="text" id="right-label" placeholder="'. $obj->postcode. '" name="postcode">';
 
                   echo '</div>';
                   echo '</div>';
@@ -193,4 +202,3 @@ include 'config.php';
     </script>
   </body>
 </html>
- 

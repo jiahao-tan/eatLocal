@@ -17,14 +17,22 @@
 	$fname = $_POST["fname"];
 	$lname = $_POST["lname"];
 	$address = $_POST["address"];
-	$city = $_POST["city"];
-	$pin = $_POST["pin"];
+	$suburb = $_POST["suburb"];
+	$postcode = $_POST["postcode"];
 	$email = $_POST["email"];
 	$pwd = $_POST["pwd"];
 
-	if($mysqli->query("INSERT INTO users (user_id, fname, lname, address, city, pin, email, password) VALUES('$user_id', '$fname', '$lname', '$address', '$city', $pin, '$email', '$pwd')")){
-		echo 'Data inserted';
-		echo '<br/>';
+	// Don't store password in plaintext, but instead create a secure hash of it.
+	// The "password_hash" builtin includes the creation of a secure salt.
+	$pwd = password_hash($pwd, PASSWORD_BCRYPT);
+
+	if($stmt = $mysqli->prepare("INSERT INTO users (user_id, fname, lname, address, suburb, postcode, email, password) VALUES(?, ?, ?, ?, ?, ?, ?, ?)")) {
+		$stmt->bind_param("ssssssss", $user_id, $fname, $lname, $address, $suburb, $postcode, $email, $pwd);
+		if($stmt->execute()) {
+			echo 'Data inserted';
+			echo '<br/>';
+		} else
+		die(mysqli_error($mysqli));
 	} else {
 		die(mysqli_error($mysqli));
 	}

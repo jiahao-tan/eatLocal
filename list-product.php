@@ -57,8 +57,9 @@
 
 							<div class="row">
 								<div class="col">
-									<label for="image">Image Name</label>
-									<input type="text" class="form-control" id="image" name="image" placeholder="Image">
+									<label for="file">Image:</label>
+									<!-- <input type="hidden" name="MAX_FILE_SIZE" value="131072"> -->
+									<input type="file" class="form-control" id="image" name="image"/>
 								</div>
 							</div>
 							<br>

@@ -8,6 +8,13 @@ if(isset($_SESSION['cart'])) {
 
   $total = 0;
 
+	// add pending order
+	$stmt = $mysqli->prepare("INSERT INTO orders (buyer_user_id, status) VALUES(?, 'pending')");
+	$stmt->bind_param("s", $_SESSION['user_id']);
+	if(!$stmt->execute())
+		die($mysqli->error);
+	$order_id = $mysqli->insert_id;
+
   foreach($_SESSION['cart'] as $product_id => $quantity) {
 
     $result = $mysqli->query("SELECT * FROM products WHERE id = ".$product_id);
@@ -18,17 +25,21 @@ if(isset($_SESSION['cart'])) {
 
 
         $cost = $obj->price * $quantity;
+		$total += $cost;
 
         $user = $_SESSION["username"];
 
-        $query = $mysqli->query("INSERT INTO orders (product_code, product_name, product_desc, price, units, total, email) VALUES('$obj->product_code', '$obj->product_name', '$obj->product_desc', $obj->price, $quantity, $cost, '$user')");
+        $stmt = $mysqli->prepare("INSERT INTO order_items (order_id, product_id, qty) VALUES(?, ?, ?)");
+		$stmt->bind_param("iii", $order_id, $product_id, $quantity);
+		if(!$stmt->execute())
+			die($mysqli->error);
 
-        if($query){
-          $newqty = $obj->qty - $quantity;
-          if($mysqli->query("UPDATE products SET qty = ".$newqty." WHERE id = ".$product_id)){
-
-          }
-        }
+		// decrease item counts in products table
+		$newqty = $obj->qty - $quantity;
+		if(!$mysqli->query("UPDATE products SET qty = ".$newqty." WHERE id = ".$product_id))
+		{
+			die($mysqli->error);
+		}
 
         //send mail script
         /*$query = $mysqli->query("SELECT * from orders order by date desc");
@@ -58,16 +69,34 @@ if(isset($_SESSION['cart'])) {
           }
         }*/
 
+		unset($_SESSION['cart']);
+		echo "<center><b>Order processed: currently pending</b></center>\n";
 
+		// pass order to Paypal for payment
+		echo "<form action=\"payments.php\" method=\"post\" id=\"paypal_form\">\n";
+		echo "<input type=\"hidden\" name=\"cmd\" value=\"_xclick\" />\n";
+		echo "<input type=\"hidden\" name=\"no_note\" value=\"1\" />\n";
+		echo "<input type=\"hidden\" name=\"lc\" value=\"AU\" />\n";
+		echo "<input type=\"hidden\" name=\"bn\" value=\"PP-BuyNowBF:btn_buynow_LG.gif:NonHostedGuest\" />\n";
+		echo "<input type=\"hidden\" name=\"first_name\" value=\"".$_SESSION["fname"]."\" />\n";
+		echo "<input type=\"hidden\" name=\"last_name\" value=\"".$_SESSION["lname"]."\" />\n";
+		echo "<input type=\"hidden\" name=\"payer_email\" value=\"customer@example.com\" />\n";
+		echo "<input type=\"hidden\" name=\"item_number\" value=\"".$order_id."\" / >\n";
+		echo "<input type=\"hidden\" name=\"item_cost\" value=\"".$total."\" / >\n";
+		//echo "<input type=\"submit\" value=\"Click here if you are not automatically redirected.\">\n";
+		echo "</form>\n";
 
+		// submit form
+		echo "<script>document.getElementById(\"paypal_form\").submit();</script>\n";
+
+		exit;
       }
     }
   }
 }
 
-unset($_SESSION['cart']);
-header("location:index.php?page=success");
-
+echo "<center><b>Cart is currently empty!</b></center>";
+header("Refresh: 3; url=index.php?page=cart");
 
 // function getUserIpAddr(){
 //   if(!empty($_SERVER['HTTP_CLIENT_IP'])){

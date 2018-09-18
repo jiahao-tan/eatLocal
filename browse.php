@@ -9,7 +9,7 @@ include 'config.php';
 			<div class="col-sm-3">
 				<div class="box">
 <h2>Browse</h2>
-           		
+
 <?php
 	$prev_cat = '';
 	$i = 0;
@@ -20,16 +20,16 @@ include 'config.php';
 	} else {
 		while($obj = $result->fetch_object()) {
 			if($prev_cat != $obj->category) {
-				
+
 				if($prev_cat != '') {
 					echo '</ul>'."\n";
       				echo '</div>'."\n";
       				echo '</div>'."\n";
 				}
-				
+
 				$prev_cat = $obj->category;
 				$i++;
-				
+
 				echo '<div class="panel-group'.$i.'">'."\n";
 				echo '<div class="panel-heading">'."\n";
        			echo '	<p class="panel-title">'."\n";
@@ -39,7 +39,7 @@ include 'config.php';
 				echo '<div id="collapse'.$i.'" class="panel-collapse collapse">'."\n";
 				echo '	<ul class="list-group">'."\n";
 			}
-			
+
 			echo '<li class="list-group-item"><a href="index.php?page=browse&product='.$obj->product_name.'">'.$obj->product_name.'</a></li>'."\n";
 		}
 		echo '</ul>'."\n";
@@ -51,24 +51,9 @@ include 'config.php';
 			</div>
 			<!--menu completed-->
 			<!-- gallery-->
-			<div class="col-md-9">
+			<div class="col-sm-9">
 				<div class="container">
-					<div class="row">
-						<div class="col-md-12 col-sm-12">
-							<div class="input-group" id="">
-								<!-- <input type="text" class="form-control" placeholder="I'm looking for" />
-								<div class="input-group-btn">
-									<div class="btn-group" role="group">
-										<button type="button" class="btn btn-clr">
-											<div>
-												<i class="fa fa-search"></i>
-											</div>
-										</button>
-									</div>
-								</div> -->
-							</div>
-						</div>
-					</div>
+				
 					<center>
 						<h2>
 						<?php
@@ -89,9 +74,15 @@ include 'config.php';
           $product_quantity = array();
 
 		  if(isset($_GET['search2'])) {
-		  	$result = $mysqli->query('SELECT * FROM products where product_name regexp '."'".$_GET['search2']."'");
+		  	$stmt = $mysqli->prepare("SELECT * FROM products where product_name regexp ?");
+			$stmt->bind_param("s", $_GET['search2']);
+			$stmt->execute();
+		  	$result = $stmt->get_result();
 		  } elseif(isset($_GET['product'])) {
-		  	$result = $mysqli->query('SELECT * FROM products where product_name = '."'".$_GET['product']."'");
+		  	$stmt = $mysqli->prepare("SELECT * FROM products where product_name = ?");
+			$stmt->bind_param("s", $_GET['product']);
+			$stmt->execute();
+		  	$result = $stmt->get_result();
 		  } else {
           	$result = $mysqli->query('SELECT * FROM products');
           }
@@ -114,7 +105,7 @@ include 'config.php';
 			  echo "</div>\n";
 
 			  echo '</div>';
-			  
+
 			  #if($obj->qty > 0){
                 #echo'<div><a href="update-cart.php?action=add&id='.$obj->id.'"><input type="submit" value="Add To Cart" class="btn btn-primary col-md-6 offset-md-3" /></a></div>';
               #}
@@ -135,7 +126,7 @@ include 'config.php';
         //   echo '</div>';
           ?>
 		  </div>
-					
+
 				</div>
 			</div>
 			<!--gallery completed-->

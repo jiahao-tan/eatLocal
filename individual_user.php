@@ -7,7 +7,7 @@
 	}
 	else
 		$profile_user_id = $_GET["user_id"];
-	
+
 	require_once "./config.php";
 
 	$result = $mysqli->query("SELECT * FROM users WHERE user_id = '".$profile_user_id."'");
@@ -24,6 +24,24 @@
 	{
 		if(isset($_SESSION["user_id"]))
 		{
+			// validate the "rating" input
+			$rating = $_GET["rating"];
+			if($rating != "0" && $rating != "1" && $rating != "2" && $rating != "3" && $rating != "4" && $rating != "5")
+			{
+				echo "Rating must be a value between 0 and 5.";
+				header("Refresh: 3; url=index.php?page=individual_user&user_id=".$profile_user_id);
+				exit;
+			}
+			 
+			// validate the "comment" input
+			$comment = $_GET["comment"];
+			if(!preg_match("/^[A-Za-z0-9\"'\?!\. ,;_-]*$/", $comment))
+			{
+				echo "Comment must only contain alphanumeric, punctuation, and whitespace characters.";
+				header("Refresh: 3; url=index.php?page=individual_user&user_id=".$profile_user_id);
+				exit;
+			}
+
 			$result = $mysqli->query("INSERT INTO user_reviews (user_id, message, rating, author_user_id) VALUES ('".$profile_user_id."', '".$_GET["comment"]."', ".$_GET["rating"].", '".$_SESSION["user_id"]."')");
 			if(!$result)
 				die($mysqli->error);
@@ -34,7 +52,7 @@
 		else
 		{
 			echo "You must be logged on to write a review.";
-			header("Refresh: 3; url=index.php?page=individual_product&product_id=".$profile_user_id);
+			header("Refresh: 3; url=index.php?page=individual_user&user_id=".$profile_user_id);
 			exit;
 		}
 	}
@@ -78,7 +96,7 @@
 </div>
 
 <div class="d-sm-flex justify-content-center">
-		<div class="p-4">
+		<div class="p-3">
 			<span class="user_description">
 				<?php echo $obj->desc; ?>
 			</span>
@@ -89,7 +107,7 @@
 				?>
 			</span>
 		</div>
-		<div class="p-4">
+		<div class="p-5">
 			<div class="rate_form">
 				<center>Rate this user</center>
 				<form>
@@ -103,7 +121,14 @@
 								Rating:
 							</div>
 							<div class="col">
-								<input type="text" name="rating">
+								<select name="rating">
+									<option value="0">&#9734; &#9734; &#9734; &#9734; &#9734; (0/5)</option>
+									<option value="1">&#9733; &#9734; &#9734; &#9734; &#9734; (1/5)</option>
+									<option value="2">&#9733; &#9733; &#9734; &#9734; &#9734; (2/5)</option>
+									<option value="3">&#9733; &#9733; &#9733; &#9734; &#9734; (3/5)</option>
+									<option value="4">&#9733; &#9733; &#9733; &#9733; &#9734; (4/5)</option>
+									<option value="5">&#9733; &#9733; &#9733; &#9733; &#9733; (5/5)</option>
+								</select>
 							</div>
 						</div>
 						<div class="row">

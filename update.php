@@ -7,8 +7,8 @@
 	$fname = $_POST["fname"];
 	$lname = $_POST["lname"];
 	$address = $_POST["address"];
-	$city = $_POST["city"];
-	$pin = $_POST["pin"];
+	$suburb = $_POST["suburb"];
+	$postcode = $_POST["postcode"];
 	$email = $_POST["email"];
 	$opwd = $_POST["opwd"];
 	$pwd = $_POST["pwd"];
@@ -35,15 +35,15 @@
 	  }
 	}
 
-	if($city!=""){
-	  $result = $mysqli->query('UPDATE users SET city ="'. $city .'" WHERE user_id ="'.$_SESSION['user_id'].'"');
+	if($suburb!=""){
+	  $result = $mysqli->query('UPDATE users SET suburb ="'. $suburb .'" WHERE user_id ="'.$_SESSION['user_id'].'"');
 	  if(!$result){
 	  	die($mysqli->error);
 	  }
 	}
 
-	if($pin!=""){
-	  $result = $mysqli->query('UPDATE users SET pin ='. $pin .' WHERE user_id ="'.$_SESSION['user_id'].'"');
+	if($postcode!=""){
+	  $result = $mysqli->query('UPDATE users SET postcode ='. $postcode .' WHERE user_id ="'.$_SESSION['user_id'].'"');
 	  if(!$result){
 	  	die($mysqli->error);
 	  }
@@ -61,6 +61,7 @@
 	//$obj = $result->fetch_object();
 
 	if(/*$opwd === $obj->password &&*/ $pwd!=""){
+		$pwd = password_hash($pwd, PASSWORD_BCRYPT);
 	  $query = $mysqli->query('UPDATE users SET password ="'. $pwd .'" WHERE user_id ="'.$_SESSION['user_id'].'"');
 	  if(!$query){
 	  	die($mysqli->error);

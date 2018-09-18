@@ -51,8 +51,36 @@ if (session_id() == '' || !isset($_SESSION)) {session_start();}
 			{
 				include "config.php";
 				$user_id = $_SESSION["user_id"];
+
+
+				// update cart if there is a pending order
+				/*
+				$stmt = $mysqli->prepare("SELECT * FROM orders WHERE buyer_user_id = ? AND status = 'pending'");
+				$stmt->bind_param("s", $user_id);
+				$stmt->execute();
+				$result = $stmt->get_result();
+				$have_cleared_cart = false;
+				while($obj = $result->fetch_object())
+				{
+					if(!$have_cleared_cart)
+					{
+						$have_cleared_cart = true;
+						unset($_SESSION["cart"]);
+					}
+
+					if(isset($_SESSION['cart'][$obj->product_id]))
+						$_SESSION['cart'][$obj->product_id] += $obj->qty;
+					else
+						$_SESSION['cart'][$obj->product_id] = $obj->qty;
+				}
+				*/
+
+				// update num unread messages
 				$num_unread_msgs = 0;
-				$result = $mysqli->query("SELECT * FROM messages m, conversations c WHERE m.conversation_id = c.conversation_id AND (c.from_user_id = '".$user_id."' OR c.to_user_id = '".$user_id."')");
+				$stmt = $mysqli->prepare("SELECT * FROM messages m, conversations c WHERE m.conversation_id = c.conversation_id AND (c.from_user_id = ? OR c.to_user_id = ?)");
+				$stmt->bind_param("ss", $user_id, $user_id);
+				$stmt->execute();
+				$result = $stmt->get_result();
 				if($result == false)
 				{
 					die($mysqli->error);
@@ -71,6 +99,7 @@ if (session_id() == '' || !isset($_SESSION)) {session_start();}
 
 			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=browse">Products</a></li>';
 			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=cart">Cart</a></li>';
+			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=orders">Orders</a></li>';
 			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=list-product">Post</a></li>';
 	} else {
 			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=home3">Home</a></li>';

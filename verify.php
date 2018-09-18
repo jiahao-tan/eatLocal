@@ -8,7 +8,7 @@
 	$password = $_POST["pwd"];
 	//$query = $mysqli->query("SELECT email, password from users");
 
-	$result = $mysqli->query('SELECT user_id,email,password,fname,type from users order by user_id asc');
+	$result = $mysqli->query('SELECT * from users order by user_id asc');
 
 	if($result === FALSE){
 	  die($mysqli->error);
@@ -17,11 +17,12 @@
 	$found = 'false';
 	if($result){
 		while($obj = $result->fetch_object()){
-			if($obj->email === $username && $obj->password === $password) {
+			if($obj->email === $username && password_verify($password, $obj->password)) {
 				$_SESSION['username'] = $username;
 				$_SESSION['type'] = $obj->type;
 				$_SESSION['user_id'] = $obj->user_id;
 				$_SESSION['fname'] = $obj->fname;
+				$_SESSION['lname'] = $obj->lname;
 				header("location:index.php");
 				$found = 'true';
 			}

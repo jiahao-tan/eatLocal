@@ -60,11 +60,12 @@
 		$to_user_id = $_POST["to_user_id"];
 		$subject = $_POST["subject"];
 
-		$result = $mysqli->query("INSERT INTO conversations(from_user_id, to_user_id, subject) VALUES('".$user_id."', '".$to_user_id."', '".$subject."')");
-		if($result === FALSE)
-		{
+		$stmt = $mysqli->prepare("INSERT INTO conversations(from_user_id, to_user_id, subject) VALUES(?, ?, ?)");
+		if(!$stmt)
 			die($mysqli->error);
-		}
+
+		$stmt->bind_param("sss", $user_id, $to_user_id, $subject);
+		$stmt->execute();
 
 		// get conversation id
 		$conversation_id = $mysqli->insert_id;
@@ -78,7 +79,10 @@
 	$sender_is_from = 1;
 	if(isset($_POST["conversation_id"]))
 	{
-		$result = $mysqli->query("SELECT * FROM conversations WHERE conversation_id = ".$conversation_id);
+		$stmt = $mysqli->prepare("SELECT * FROM conversations WHERE conversation_id = ?");
+		$stmt->bind_param("s", $conversation_id);
+		$stmt->execute();
+		$result = $stmt->get_result();
 		if($result === FALSE)
 		{
 			die($mysqli->error);
@@ -95,8 +99,9 @@
 			exit;
 		}
 	}
-	$result = $mysqli->query("INSERT INTO messages(conversation_id, message, sender_is_from, isread) VALUES(".$conversation_id.", '".$message."', $sender_is_from, 0)");
-	if($result === FALSE)
+	$stmt = $mysqli->prepare("INSERT INTO messages(conversation_id, message, sender_is_from, isread) VALUES(?, ?, ?, 0)");
+	$stmt->bind_param("isi", $conversation_id, $message, $sender_is_from);
+	if(!$stmt->execute())
 	{
 		die($mysqli->error);
 	}

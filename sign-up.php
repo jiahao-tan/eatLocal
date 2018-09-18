@@ -36,12 +36,12 @@
 							</div>
 							<div class="row">
 								<div class="col-md-6">
-									<label for="city">City</label>
-									<input type="text" class="form-control" id="city" name="city" size="15" maxlength="50" required />
+									<label for="city">Suburb</label>
+									<input type="text" class="form-control" id="suburb" name="suburb" size="15" maxlength="50" required />
 								</div>
 								<div class="col-md-6">
-								<label for="pin">Pin Code:</label>
-									<input type="number" class="form-control" id="pin" name="pin" size="30" maxlength="50" required />
+								<label for="pin">Postcode:</label>
+									<input type="text" class="form-control" id="postcode" name="postcode" size="30" maxlength="50" required />
 								</div>
 							</div>
 							<div class="row">
