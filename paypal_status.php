@@ -29,4 +29,3 @@
 			die($mysqli->error);
 	}
 ?>
- 

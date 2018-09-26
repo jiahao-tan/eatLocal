@@ -16,9 +16,9 @@ $dbConfig = [
 // for your site.
 $paypalConfig = [
 	'email' => 'yelnats.nat-facilitator@gmail.com',
-	'return_url' => 'http://localhost/latest/index.php?page=paypal_status&status=success',
-	'cancel_url' => 'http://localhost/latest/index.php?page=paypal_status&status=failure',
-	'notify_url' => 'http://localhost/latest/payments.php'
+	'return_url' => 'http://localhost/index.php?page=paypal_status&status=success',
+	'cancel_url' => 'http://localhost/index.php?page=paypal_status&status=failure',
+	'notify_url' => 'http://localhost/payments.php'
 ];
 
 $paypalUrl = $enableSandbox ? 'https://www.sandbox.paypal.com/cgi-bin/webscr' : 'https://www.paypal.com/cgi-bin/webscr';

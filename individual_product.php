@@ -1,4 +1,7 @@
 <?php
+    if(session_id() == '' || !isset($_SESSION)){session_start();}
+	include "config.php";
+
 	$product_id = 0;
 	if(!isset($_GET["product_id"]))
 	{
@@ -7,8 +10,6 @@
 	}
 	else
 		$product_id = $_GET["product_id"];
-
-	require_once "./config.php";
 
 	$result = $mysqli->query("SELECT * FROM products WHERE id = ".$product_id);
 	if(!$result)
@@ -29,6 +30,134 @@
 		echo "No seller associated with product.";
 		exit;
 	}
+
+	// update fields, if requested
+	$updated_fields = false;
+	if(isset($_POST["desc"]) && $_POST["desc"] != "" && isset($_SESSION["user_id"]) && $seller_obj->user_id == $_SESSION["user_id"])
+	{
+		if(!($stmt = $mysqli->prepare("UPDATE products SET product_desc = ? WHERE id = ?")))
+			die($mysqli->error);
+		if(!$stmt->bind_param("si", $_POST["desc"], $product_id))
+			die($mysqli->error);
+		if(!$stmt->execute())
+			die($mysqli->error);
+		$updated_fields = true;
+	}
+
+	if(isset($_POST["product_name"]) && $_POST["product_name"] != "" && isset($_SESSION["user_id"]) && $seller_obj->user_id == $_SESSION["user_id"])
+	{
+		if(!($stmt = $mysqli->prepare("UPDATE products SET product_name = ? WHERE id = ?")))
+			die($mysqli->error);
+		if(!$stmt->bind_param("si", $_POST["product_name"], $product_id))
+			die($mysqli->error);
+		if(!$stmt->execute())
+			die($mysqli->error);
+		$updated_fields = true;
+	}
+
+	if(isset($_POST["price"]) && $_POST["price"] != "" && isset($_SESSION["user_id"]) && $seller_obj->user_id == $_SESSION["user_id"])
+	{
+		if(!($stmt = $mysqli->prepare("UPDATE products SET price = ? WHERE id = ?")))
+			die($mysqli->error);
+		if(!$stmt->bind_param("ii", $_POST["price"], $product_id))
+			die($mysqli->error);
+		if(!$stmt->execute())
+			die($mysqli->error);
+		$updated_fields = true;
+	}
+
+	if(isset($_POST["unit"]) && $_POST["unit"] != "" && isset($_SESSION["user_id"]) && $seller_obj->user_id == $_SESSION["user_id"])
+	{
+		if(!($stmt = $mysqli->prepare("UPDATE products SET unit = ? WHERE id = ?")))
+			die($mysqli->error);
+		if(!$stmt->bind_param("si", $_POST["unit"], $product_id))
+			die($mysqli->error);
+		if(!$stmt->execute())
+			die($mysqli->error);
+		$updated_fields = true;
+	}
+
+	if($updated_fields)
+		header("Refresh: 0; url=index.php?page=individual_product&product_id=$product_id");
+
+
+	// delete product, if requested
+	if(isset($_POST["delete_product"]) && $_POST["delete_product"] == "true" && isset($_SESSION["user_id"]) && $seller_obj->user_id == $_SESSION["user_id"])
+	{
+		if(!($stmt = $mysqli->prepare("DELETE FROM product_images WHERE product_id = ?")))
+			die($mysqli->error);
+		if(!$stmt->bind_param("i", $product_id))
+			die($mysqli->error);
+		if(!$stmt->execute())
+			die($mysqli->error);
+		$stmt->close();
+		if(!($stmt = $mysqli->prepare("DELETE FROM products WHERE id = ?")))
+			die($mysqli->error);
+		if(!$stmt->bind_param("i", $product_id))
+			die($mysqli->error);
+		if(!$stmt->execute())
+			die($mysqli->error);
+		$stmt->close();
+		header("Refresh: 0; url=index.php?page=browse");
+	}
+
+	// delete image if requested
+	if(isset($_GET["image_id"]) && isset($_SESSION["user_id"]) && $seller_obj->user_id == $_SESSION["user_id"])
+	{
+		$image_id = $_GET["image_id"];
+		$user_id = $_SESSION["user_id"];
+		// confirm that requested image belongs to a product of the user
+		if($obj->seller_user_id == $user_id)
+		{
+			if(!($s = $mysqli->prepare("DELETE FROM product_images WHERE image_id = ? AND product_id = ?")))
+				die($mysqli->error);
+			if(!($s->bind_param("ii", $image_id, $product_id)))
+				die($mysqli->error);
+			if(!$s->execute())
+			{
+				echo "Could not delete image.\n";
+				die($mysqli->error);
+			}
+			else
+			{
+				if(!unlink("product_images/".$image_id))
+					echo "Could not delete image file from filesystem.\n";
+				$s->close();
+			}
+		}
+	}
+
+	// add image if requested
+	if(isset($_FILES["image"]) && $_FILES["image"]["tmp_name"] != "" && $_FILES["image"]["size"] > 0 && isset($_SESSION["user_id"]) && $seller_obj->user_id == $_SESSION["user_id"])
+	{
+		if($_FILES["image"]["size"] > 524288)
+		{
+			echo "Image is too large. Please limit images to 512 KiB.";
+			header("Refresh: 3; url=index.php?page=individual_product&product_id=$product_id");
+			exit;
+		}
+
+		$user_id = $_SESSION["user_id"];
+		// confirm that product belongs of the user (and therefore can add an image)
+		if($obj->seller_user_id == $user_id)
+		{
+			// insert new image			
+			$s = $mysqli->prepare("INSERT INTO product_images (product_id) VALUES (?)");
+			$s->bind_param("i", $product_id);
+			$s->execute();
+			if(!$s)
+			{
+				echo "Could not add image.\n";
+				die($mysqli->error);
+			}
+			$image_id = $mysqli->insert_id;
+			if(!move_uploaded_file($_FILES["image"]["tmp_name"], "product_images/".$image_id))
+				echo "Could not upload image.\n";
+			$s->close();
+		}
+	}
+
+
 
 	if(isset($_GET["comment"]) || isset($_GET["rating"]))
 	{
@@ -51,14 +180,24 @@
 ?>
 <div class="container">
 <div class="header">
-  <h1 align="center"><?php echo $obj->product_name; ?> in <?php echo $seller_obj->postcode; ?></h1>
+	<?php
+		if($obj->seller_user_id == $user_id)
+		{
+			echo "<form style=\"display: inline\" action=\"index.php?page=individual_product&product_id=$product_id\" method=\"post\">\n";
+			echo "<h1 align=\"center\">\n";
+			echo "<input type=\"text\" size=\"15\" name=\"product_name\" value=\"{$obj->product_name}\"/> in {$seller_obj->postcode}\n";
+			echo "</h1>\n";
+			echo "<center><input type=\"submit\" value=\"Update product name\"/></center>\n";
+			echo "</form>\n";
+		}
+		else
+			echo "<h1 align=\"center\">$obj->product_name in {$seller_obj->postcode}</h1>\n";
+	?>
 <h3 align="right"><?php echo $seller_obj->suburb; ?></h3>
 </div>
 
-<body>
-
 <!-- <h2 style="text-align:center">Product</h2> -->
-<div class="row">
+<div class="d-flex flex-wrap justify-content-center">
 	<?php
 		$result = $mysqli->query("SELECT * FROM product_images WHERE product_id = ".$product_id);
 		if(!$result)
@@ -67,25 +206,88 @@
 		while($img = $result->fetch_object())
 		{
 			$i++;
-			echo "<div class=\"col\">\n";
-			$file = "images/".$img->image_id;
+			echo "<div class=\"col-sm-4 col-md-3\">\n";
+			echo "<div style=\"width: 100%; padding-bottom: 100%; position: relative;\">\n";
+			echo "<div class=\"border\" style=\"position: absolute; top: 0; bottom: 0; left: 0; right: 0;\">\n";
+			$file = "product_images/".$img->image_id;
 			if(!file_exists($file))
-				$file = "images/no_image";
-			echo "<img class=\"demo cursor\" src=\"".$file."\" style=\"width: 100%\" onclick=\"currentSlide(".$i.")\">\n";
+				$file = "product_images/no_image";
+			echo "<img class=\"demo cursor\" src=\"".$file."\" style=\"margin: auto; object-fit: cover; width: 100%; height: 100%;\" onclick=\"currentSlide(".$i.")\">\n";
 			echo "</div>\n";
+			echo "</div>\n";
+			echo "<div class=\"row justify-content-center\">\n";
+			if($obj->seller_user_id == $user_id)
+			{
+				echo "<form action=\"index.php\">\n";
+				echo "<input type=\"hidden\" name=\"product_id\" value=\"$product_id\"/>\n";
+				echo "<input type=\"hidden\" name=\"image_id\" value=\"$img->image_id\"/>\n";
+				echo "<input type=\"hidden\" name=\"page\" value=\"individual_product\"/>\n";
+				echo "<input type=\"submit\" value=\"Delete image\"/>\n";
+				echo "</form>\n";
+			}
+			echo "</div> <!-- row -->\n";
+			echo "</div> <!-- col-sm-4 col-md-3 -->\n";
 		}
 	?>
+
 </div>
+
+<?php
+	if($obj->seller_user_id == $user_id)
+	{
+		echo "<div class=\"row justify-content-center\">\n";
+		echo "<form class=\"border\" method=\"post\" action=\"index.php?page=individual_product&product_id=$product_id\" enctype=\"multipart/form-data\">\n";
+		echo "<input type=\"file\" name=\"image\"/>\n";
+		echo "<input type=\"submit\" value=\"Add product image\"/>\n";
+		echo "</form>\n";
+		echo "</div>\n";
+	}
+?>
+
+<?php
+	if($obj->seller_user_id == $user_id)
+	{
+		echo "<div class=\"row justify-content-center\">\n";
+		echo "<form class=\"border\" method=\"post\" action=\"index.php?page=individual_product&product_id=$product_id\">\n";
+		echo "<input type=\"hidden\" name=\"delete_product\" value=\"true\"/>\n";
+		echo "<input type=\"submit\" value=\"Delete product\"/>\n";
+		echo "</form>\n";
+		echo "</div>\n";
+	}
+?>
+
 <div class="row">
 <div class="col-12">
 
   <h2>Description</h2>
-  <p><?php echo $obj->product_desc; ?></p>
+  <p>
+	  <?php
+		if($obj->seller_user_id == $user_id)
+		{
+			echo "<form method=\"post\" action=\"index.php?page=individual_product&product_id=$product_id\">\n";
+			echo "<textarea name=\"desc\">$obj->product_desc</textarea>\n";
+			echo "<br/>\n";
+			echo "<input type=\"submit\" value=\"Update description\"/>\n";
+			echo "</form>\n";
+		}
+		else
+			echo $obj->product_desc;
+	  ?>
+  </p>
 
 
       <div class="member_frm">
 		<?php
-			echo "Price: $".$obj->price." / ".$obj->unit;
+			if($obj->seller_user_id == $user_id)
+			{
+				echo "<form method=\"post\" action=\"index.php?page=individual_product&product_id=$product_id\">\n";
+				echo "Price: $ <input type=\"text\" name=\"price\" value=\"$obj->price\"/> per <input type=\"text\" name=\"unit\" value=\"$obj->unit\"/>\n";
+				echo "<br/>\n";
+				echo "<input type=\"submit\" value=\"Update price & unit\"/>\n";
+				echo "</form>\n";
+			}
+			else
+				echo "Price: $".$obj->price." per ".$obj->unit;
 		?>
 		<form action="update-cart.php" method="get">
 			<input type="hidden" name="action" value="add"/>
@@ -199,6 +401,5 @@
 	?>
 </div>
 
-</div>
 </div>
 </div>

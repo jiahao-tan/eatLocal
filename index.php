@@ -100,6 +100,7 @@ if (session_id() == '' || !isset($_SESSION)) {session_start();}
 			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=browse">Products</a></li>';
 			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=cart">Cart</a></li>';
 			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=orders">Orders</a></li>';
+			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=sales_history">Sales History</a></li>';
 			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=list-product">Post</a></li>';
 	} else {
 			echo '<li class="nav-item"><a class="nav-link" href="index.php?page=home3">Home</a></li>';
@@ -145,6 +146,18 @@ if (isset($_SESSION["username"])) {
 $page = isset($_GET['page']) ? $_GET['page'] : 'home3';
 require "./".$page.".php";
 ?>
+
+<div style="margin-top: 2.5em"></div>
+
+<!-- <footer class="bg-clr"> 
+	<div class="container-fluid" style="padding-top: 0.5em; padding-bottom: 0.5em">
+		<div class="row justify-content-center">
+			<img style="width: 1.5em;" src="images/thumbnail_facebook.png"/>
+			<img style="width: 1.5em; margin-left: 1em" src="images/thumbnail_ins.png"/>
+			<img style="width: 1.5em; margin-left: 1em" src="images/thumbnail_twitter.png"/>
+		</div>
+	</div>
+</footer> -->
 
 </body>
 
